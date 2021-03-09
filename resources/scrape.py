@@ -37,7 +37,7 @@ vaccinations = int(vaccination_field.get_attribute("innerText").replace(",", "")
 # check if data needs update
 if date > last_date:
     print("This is new data — saving to file.")
-    print(f"{vaccinations:,.0f} vaccinations as of {test:%B %d, %Y}.")
+    print(f"{vaccinations:,.0f} vaccinations as of {date:%B %d, %Y}.")
     
     # save to file    
     data.iloc[len(data)] = [date, vaccinations]
