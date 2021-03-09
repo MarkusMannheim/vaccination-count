@@ -23,7 +23,7 @@ green: #00A388
 }
 :root {
   font-size: 1em;
-  font-family: "ABCSans Regular", "Arial", sans-serif;
+  font-family: "ABCSans Black", "Arial Black", sans-serif;
   color: #333;
 }
 body {
@@ -36,98 +36,46 @@ body {
   left: 0;
   right: 0;
   padding: .5rem;
-  margin-bottom: 1rem;
+  margin-bottom: .5rem;
   border: solid .5px #e6e6e6;
+  opacity: 0;
   display: flex;
   flex-flow: column;
 }
 h1, p {
   margin: 0;
 }
-#title {
-  font-family: "ABCSans Black", "Arial Black", sans-serif;
-  font-size: 1rem;
-  padding-bottom: .5rem;
+p {
+  font-family: "ABCSans Regular", "Arial", sans-serif;
 }
-#stats {
+#title {
+  font-size: 1.2rem;
+  margin-bottom: .5rem;
+}
+#dateMarker {
+  font-family: "ABCSans Regular", "Arial", sans-serif;
+  font-size: .8rem;
+  color: #666;
+  margin: .5rem 0 1rem .0;
+}
+.details {
   display: flex;
   justify-content: space-between;
-  text-align: center;
+  line-height: 1.75rem;
+  border-bottom: solid 2px #e6e6e6;
+  background: #f2f2f2;
 }
-.statBox {
-  font-size: .8rem;
-  padding: 0 .5rem;
-  width: 100%;
-  border-right: dashed 1px #ccc;
-}
-.statBox:first-child {
-  padding-left: 0;
-}
-.statBox:last-child {
-  padding-right: 0;
-  border-right: none;
-}
-.statBox div {
-  display: flex;
-  justify-content: center
-}
-.statBox .number {
-  height: 3.25rem;
-  width: 3.25rem;
-  background-color: #f2f2f2;
-  box-shadow: 1px 1px 3px #333;
-  font-size: 1.25rem;
-  line-height: 3rem;
-  font-family: "ABCSans Black", "Arial Black", sans-serif;
-}
-.statBox p {
-  padding-top: .5rem;
-}
-#deaths {
-  color: #F75F00;
-}
-#active {
-  color: #009CBF;
-}
-#total {
-  color: #999;
-}
-#days {
+.details div {
   color: #00A388;
+  font-size: 1.25rem;
 }
 #chart {
-  height: 100%;
-  margin-top: .5rem;
-}
-#axisGroup {
-  opacity: 0;
-}
-.domain {
-  stroke: #e6e6e6;
-  stroke: .5;
-}
-.tick text {
-  fill: #333;
-  font-size: .7rem;
-}
-#plot {
-  fill: #009CBF;
-  clip-path: url(#chartClip);
+  background: #999;
 }
 @media only screen and (min-width: 500px) {
   #title {
     font-size: 1.2rem;
     padding-bottom: 1rem;
-  }
-  .statBox {
-    display: flex;
-    text-align: left;
-    align-items: center;
-    padding: 0 1rem;
-  }
-  .statBox p {
-    padding-top: 0;
-    padding-left: 1rem;
   }
   #chart {
     margin-top: 1rem;

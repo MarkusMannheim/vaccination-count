@@ -11,19 +11,19 @@
     </script>
     <!-- my stuff -->
     <meta charset="utf-8">
-    <title>COVID-19 in Canberra</title>
-    <meta name="description" content="Tracking the ACT's confirmed COVID-19 cases and outcomes.">
+    <title>Canberra vaccinations</title>
+    <meta name="description" content="Tracking the ACT's COVID-19 vaccination progress.">
     <meta name="keywords" content="coronavirus, australia, canberra, act, virus, corona, covid-19, covid19, disease, spread, infection">
     <meta name="author" content="Markus Mannheim">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <script src="https://d3js.org/d3.v4.min.js"></script>
+    <script src="https://d3js.org/d3.v6.min.js"></script>
     <link href="./resources/style.css" rel="stylesheet">
     <link href="./resources/abcLogo64.png" rel="icon">
     <!-- page data for scrapers -->
-    <meta property="og:title" content="COVID-19 in Canberra">
-    <meta property="og:description" content="Tracking the ACT's confirmed COVID-19 cases and outcomes.">
-    <meta property="og:image" content="https://markusmannheim.github.io/act-coronavirus-teaser/resources/actCurve.jpg">
-    <meta property="og:url" content="https://markusmannheim.github.io/act-coronavirus-teaser/">
+    <meta property="og:title" content="Canberra vaccinations">
+    <meta property="og:description" content="Tracking the ACT's COVID-19 vaccination progress.">
+    <meta property="og:image" content="https://markusmannheim.github.io/vaccination-count/resources/actVaccines.jpg">
+    <meta property="og:url" content="https://markusmannheim.github.io/vaccination-count/">
     <meta property="og:type" content="website">
     <meta property="twitter:card" content="summary_large_image">
     <meta property="twitter:site" content="@MarkusMannheim">
@@ -32,171 +32,58 @@
   <body>
     <!-- initial layout -->
     <div id="container">
-      <h1 id="title">COVID-19 in Canberra</h1>
-      <div id="stats">
-        <div class="statBox">
-          <div>
-            <div class="number" id="days"></div>
-          </div>
-          <p>days free of disease</p>
-        </div>
-        <div class="statBox">
-          <div>
-            <div class="number" id="active"></div>
-          </div>
-          <p>active cases</p>
-        </div>
-        <div class="statBox">
-        <div>
-          <div class="number" id="total"></div>
-        </div>
-          <p>total cases</p>
-        </div>
-        <div class="statBox">
-          <div>
-            <div class="number" id="deaths"></div>
-          </div>
-          <p>deaths</p>
-        </div>
+      <h1 id="title">Vaccinating the capital</h1>
+      <div id="number" class="details">
+        <p>Residents vaccinated:</p>
+        <div>0</div>
       </div>
+      <div id="percentage" class="details">
+        <p>Estimated share of population:</p>
+        <div>0.0%</div>
+      </div>
+      <p id="dateMarker">last updated on <span></span></p>
       <svg id="chart">
         <g id="axisGroup"></g>
-        <defs>
-          <clipPath id="chartClip">
-            <rect></rect>
-          </clipPath>
-        </defs>
         <g id="chartGroup"></g>
       </svg>
     </div>
     <script>
+      // page elements
+      container = d3.select("#container");
+      number = d3.select("#number div");
+      percentage = d3.select("#percentage div");
+      chart = d3.select("#chart");
+      chartGroup = d3.select("#chartGroup");
+      axisGroup = d3.select("#axisGroup");
+      population = 432192;
       // load scraped data (with in-built cache refresh)
-      d3.csv("./resources/actData.csv?randomKey=" + Math.floor(Math.random() * 9000) + 1000, function(error, data) {
-        if (error) throw error;
-        covidData = data;
-        // format data
-        covidData.forEach(function(d) {
-          for (key in d) {
-            if (key == "date") {
-              d.date = new Date(d.date);
-            } else {
-              d[key] = +d[key];
-            }
-          }
+      d3.csv("./resources/vaccinations_data.csv?randomKey=" + Math.floor(Math.random() * 9000) + 1000)
+        .then(function(data) {
+          vaccineData = data.map(function(d) {
+            return {
+              date: new Date(d.date),
+              vaccinations: +d.vaccinations,
+              percentage: +d.vaccinations / population
+            };
+          });
+
+          // draw chart
+          window.addEventListener("resize", resize);
+          d3.timeout(function() {
+            prepareChart();
+          }, 500);
         });
-        // fill stat boxes
-        d3.selectAll(".number")
-          .text(0);
-        days = 0;
-        i = covidData.length - 1;
-        while (i > 0) {
-          if (covidData[i].active > 0) {
-            break;
-          } else {
-            days = days + 1;
-            i = i - 1;
-          }
-        }
-        d3.select("#days").transition()
-          .duration(1000)
-          .delay(500)
-          .tween("text", function(d) {
-              let self = this;
-              let i = d3.interpolate(0, days)
-              return function(t) {
-                self.textContent = d3.format(",.0f")(i(t));
-              };
-            });
-        // check grammar
-        if (days == 1) document.querySelector(".statBox p").innerText = "day free of disease";
-        d3.select("#active").transition()
-          .duration(1000)
-          .delay(500)
-          .tween("text", function(d) {
-              let self = this;
-              let i = d3.interpolate(0, covidData[covidData.length - 1].active);
-              return function(t) {
-                self.textContent = d3.format(",.0f")(i(t));
-              };
-            })
-           .each(function(d) {
-              if (covidData[covidData.length - 1].active == 1) {
-                 this.parentNode.parentNode.querySelector("p").innerText = "active case";
-              }
-           });
-        d3.select("#total").transition()
-          .duration(2000)
-          .delay(500)
-          .tween("text", function(d) {
-              let self = this;
-              let i = d3.interpolate(0, covidData[covidData.length - 1].confirmed);
-              return function(t) {
-                self.textContent = d3.format(",.0f")(i(t));
-              };
-            });
-        d3.select("#deaths").transition()
-          .duration(2000)
-          .delay(500)
-          .tween("text", function(d) {
-              let self = this;
-              let i = d3.interpolate(0, covidData[covidData.length - 1].deaths);
-              return function(t) {
-                self.textContent = d3.format(",.0f")(i(t));
-              };
-            });
-        // draw chart
-        window.addEventListener("resize", resize);
-        d3.timeout(function() {
-          prepareChart();
-        }, 500);
-      });
       function resize() {
         let dimensions = document.getElementById("chart").getBoundingClientRect();
         width = dimensions.width;
         height = dimensions.height;
         margin = { top: 0, right: 10, bottom: 20, left: 10 };
-        axisTicks = width < 500 ? 4 : 5;
-        axis.ticks(axisTicks, "%b");
-        axisGroup.attr("transform", "translate(0, " + (height - margin.bottom) + ")");
-        x.range([margin.left, margin.left]);
-        axisGroup.call(axis);
-        x.range([margin.left, width - margin.right]);
-        axisGroup.transition()
-          .duration(500)
-          .style("opacity", 1)
-          .call(axis);
-        chartClip.select("rect")
-          .attr("x", margin.left)
-          .attr("y", margin.top)
-          .attr("height", height - margin.top - margin.bottom)
-          .attr("width", 0)
-          .transition()
-            .duration(2000)
-            .delay(500)
-            .attr("width", width - margin.right - margin.left);
-        y.range([height - margin.bottom, margin.top]);
-        plot.attr("d", area(covidData));
       }
       function prepareChart() {
-        x = d3.scaleTime()
-          .domain(d3.extent(covidData.map(function(d) { return d.date; })));
-        y = d3.scaleLinear()
-          .domain(d3.extent(covidData, function(d) { return d.active; }));
-        axis = d3.axisBottom(x)
-          .tickSize(0)
-          .tickPadding(8);
-        axisGroup = d3.select("#axisGroup");
-        chartGroup = d3.select("#chartGroup");
-        chartClip = d3.select("#chartClip");
-        chart = d3.select("#chart");
-        plot = chartGroup
-          .append("path")
-            .attr("id", "plot");
-        area = d3.area()
-          .x(function(d) { return x(d.date) })
-          .y1(function(d) { return y(d.active); })
-          .y0(function(d) { return height; })
-          .curve(d3.curveBasis);
+        // fade in
+        container.transition()
+          .duration(500)
+          .style("opacity", 1);
         resize();
       }
     </script>
