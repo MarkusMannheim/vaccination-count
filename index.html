@@ -41,11 +41,18 @@
         <p>Share of population:</p>
         <div>0.00%</div>
       </div>
-      <p id="dateMarker">last updated on <span></span></p>
       <svg id="chart">
+        <defs>
+          <clipPath id="chartClip">
+            <rect></rect>
+          </clipPath>
+        </defs>
         <g id="axisGroup"></g>
-        <g id="chartGroup"></g>
+        <g id="chartGroup">
+          <path id="plot"></path>
+        </g>
       </svg>
+      <p id="dateMarker">last updated on <span></span></p>
     </div>
     <script>
       // page elements
@@ -56,6 +63,8 @@
       chartGroup = d3.select("#chartGroup");
       axisGroup = d3.select("#axisGroup");
       dateMarker = d3.select("#dateMarker span");
+      chartClip = d3.select("#chartClip");
+      plot = d3.select("#plot");
       population = 432192;
       // load scraped data (with in-built cache refresh)
       d3.csv("./resources/vaccinations_data.csv?randomKey=" + Math.floor(Math.random() * 9000) + 1000)
@@ -82,11 +91,28 @@
         let dimensions = document.getElementById("chart").getBoundingClientRect();
         width = dimensions.width;
         height = dimensions.height;
-        margin = { top: 5, right: 10, bottom: 25, left: 10 };
+        margin = { top: 5, right: 5, bottom: 20, left: 15 };
+        // chart clip
+        chartClip.select("rect")
+          .attr("x", margin.left)
+          .attr("y", margin.top)
+          .attr("height", height - margin.top - margin.bottom)
+          .attr("width", width - margin.right - margin.left);
+        // scales and axes
         x.range([margin.left, width - margin.right]);
         y.range([height - margin.bottom, margin.top]);
         axisGroup.attr("transform", "translate(0, " + (height - margin.bottom) + ")")
           .call(axis);
+        plot.attr("d", area(vaccineData));
+        x.domain(d3.extent(vaccineData, function(d) { return d.date; }));
+        axisGroup.transition()
+          .delay(500)
+          .duration(2000)
+          .call(axis);
+        plot.transition()
+          .delay(500)
+          .duration(2000)
+          .attr("d", area(vaccineData));
       }
       function prepareChart() {
         // fade in
@@ -112,13 +138,20 @@
               return d3.format(".2%")(i(t));
             };
           });
+        // scales and axes
         x = d3.scaleTime()
-          .domain(d3.extent(vaccineData, function(d) { return d.date; }));
+          .domain([new Date("2021-02-21"), new Date("2021-02-24")]);
         y = d3.scaleLinear()
-          .domain(d3.extent(vaccineData, function(d) { return d.vaccinations; }));
+          .domain([0, d3.max(vaccineData, function(d) { return d.vaccinations; })]);
         axis = d3.axisBottom(x)
           .tickSizeOuter(0)
           .ticks(4, "%b %-d");
+        // area plot
+        area = d3.area()
+          .x(function(d) { return x(d.date) })
+          .y1(function(d) { return y(d.vaccinations); })
+          .y0(function(d) { return y(0); })
+          .curve(d3.curveBasis);
         resize();
       }
     </script>
