@@ -56,7 +56,6 @@ p {
   font-family: "ABCSans Regular", "Arial", sans-serif;
   font-size: .8rem;
   color: #666;
-  margin: .5rem 0;
 }
 .details {
   display: flex;
@@ -69,7 +68,7 @@ p {
   font-size: 1.25rem;
 }
 #chart {
-  background: #f2f2f2;
+  margin: .5rem 0;
   height: 100%;
 }
 .tick text {
@@ -78,6 +77,10 @@ p {
 }
 .domain, .tick line {
   stroke: #999;
+}
+#plot {
+  fill: #009CBF;
+  clip-path: url(#chartClip);
 }
 @media only screen and (min-width: 500px) {
 

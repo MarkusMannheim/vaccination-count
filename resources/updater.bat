@@ -1,5 +1,5 @@
 @ECHO off
-TITLE COVID-19 vaccinations update
+TITLE COVID-19 vaccination update
 ECHO Scraping ACT Health COVID-19 vaccination data ...
 start /w /b py ./scrape.py
 ECHO Recording changes ...
