@@ -8,16 +8,6 @@ from selenium.webdriver.support import expected_conditions as EC
 
 # load in existing data
 data = pd.read_csv("./vaccinations_data.csv")
-data.date = pd.to_datetime(data.date)import pandas as pd
-import time
-from selenium import webdriver
-from selenium.webdriver.chrome.options import Options
-from selenium.webdriver.common.by import By
-from selenium.webdriver.support.ui import WebDriverWait
-from selenium.webdriver.support import expected_conditions as EC
-
-# load in existing data
-data = pd.read_csv("./vaccinations_data.csv")
 data.date = pd.to_datetime(data.date)
 last_date = data.iat[len(data) - 1, 0]
 
