@@ -96,3 +96,29 @@ p {
     content: "Estimated share of the ACT's population:";
   }
 }
+@media only screen and (min-width: 700px) {
+  #container {
+    padding: 5rem;
+  }
+  #title {
+    font-size: 2rem;
+    margin-bottom: 1.5rem;
+  }
+  #chart {
+    margin: 1.5rem 0;
+  }
+  #dateMarker {
+    font-size: 1rem;
+  }
+  .details {
+    font-size: 1.2rem;
+    line-height: 2.5rem;
+    border-bottom: solid 4px #e6e6e6;
+  }
+  .details div {
+    font-size: 1.75rem;
+  }
+  .tick text {
+    font-size: .9rem;
+  }
+}
