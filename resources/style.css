@@ -93,6 +93,6 @@ p {
     content: "Number of Canberra residents vaccinated:";
   }
   #percentage p::after {
-    content: "Share of the ACT's estimated population:";
+    content: "Estimated share of the ACT's population:";
   }
 }
