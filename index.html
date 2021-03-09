@@ -34,11 +34,11 @@
     <div id="container">
       <h1 id="title">Vaccinating the capital</h1>
       <div id="number" class="details">
-        <p>Residents vaccinated:</p>
+        <p></p>
         <div>0</div>
       </div>
       <div id="percentage" class="details">
-        <p>Share of population:</p>
+        <p></p>
         <div>0.00%</div>
       </div>
       <svg id="chart">
@@ -101,6 +101,8 @@
         // scales and axes
         x.range([margin.left, width - margin.right]);
         y.range([height - margin.bottom, margin.top]);
+        noTicks = width < 500 ? 4 : 5;
+        axis.ticks(noTicks, "%b %-d");
         axisGroup.attr("transform", "translate(0, " + (height - margin.bottom) + ")")
           .call(axis);
         plot.attr("d", area(vaccineData));
@@ -140,12 +142,11 @@
           });
         // scales and axes
         x = d3.scaleTime()
-          .domain([new Date("2021-02-21"), new Date("2021-02-24")]);
+          .domain([new Date("2021-02-15"), new Date("2021-02-21")]);
         y = d3.scaleLinear()
           .domain([0, d3.max(vaccineData, function(d) { return d.vaccinations; })]);
         axis = d3.axisBottom(x)
-          .tickSizeOuter(0)
-          .ticks(4, "%b %-d");
+          .tickSizeOuter(0);
         // area plot
         area = d3.area()
           .x(function(d) { return x(d.date) })

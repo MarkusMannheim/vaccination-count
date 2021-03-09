@@ -67,6 +67,12 @@ p {
   color: #00A388;
   font-size: 1.25rem;
 }
+#number p::after {
+  content: "Residents vaccinated:";
+}
+#percentage p::after {
+  content: "Share of population:";
+}
 #chart {
   margin: .5rem 0;
   height: 100%;
@@ -83,5 +89,10 @@ p {
   clip-path: url(#chartClip);
 }
 @media only screen and (min-width: 500px) {
-
+  #number p::after {
+    content: "Number of Canberra residents vaccinated:";
+  }
+  #percentage p::after {
+    content: "Share of the ACT's estimated population:";
+  }
 }
