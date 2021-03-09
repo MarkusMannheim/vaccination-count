@@ -38,8 +38,8 @@
         <div>0</div>
       </div>
       <div id="percentage" class="details">
-        <p>Estimated share of population:</p>
-        <div>0.0%</div>
+        <p>Share of population:</p>
+        <div>0.00%</div>
       </div>
       <p id="dateMarker">last updated on <span></span></p>
       <svg id="chart">
@@ -55,10 +55,12 @@
       chart = d3.select("#chart");
       chartGroup = d3.select("#chartGroup");
       axisGroup = d3.select("#axisGroup");
+      dateMarker = d3.select("#dateMarker span");
       population = 432192;
       // load scraped data (with in-built cache refresh)
       d3.csv("./resources/vaccinations_data.csv?randomKey=" + Math.floor(Math.random() * 9000) + 1000)
         .then(function(data) {
+          // format data
           vaccineData = data.map(function(d) {
             return {
               date: new Date(d.date),
@@ -66,7 +68,10 @@
               percentage: +d.vaccinations / population
             };
           });
-
+          // set data parameters
+          latestDate = d3.max(vaccineData, function(d) { return d.date; });
+          latestVaccinations = d3.max(vaccineData, function(d) { return d.vaccinations; });
+          dateMarker.text(d3.timeFormat("%B %-d, %Y")(latestDate));
           // draw chart
           window.addEventListener("resize", resize);
           d3.timeout(function() {
@@ -77,13 +82,43 @@
         let dimensions = document.getElementById("chart").getBoundingClientRect();
         width = dimensions.width;
         height = dimensions.height;
-        margin = { top: 0, right: 10, bottom: 20, left: 10 };
+        margin = { top: 5, right: 10, bottom: 25, left: 10 };
+        x.range([margin.left, width - margin.right]);
+        y.range([height - margin.bottom, margin.top]);
+        axisGroup.attr("transform", "translate(0, " + (height - margin.bottom) + ")")
+          .call(axis);
       }
       function prepareChart() {
         // fade in
         container.transition()
           .duration(500)
           .style("opacity", 1);
+        // text tickers
+        number.transition()
+          .delay(500)
+          .duration(2000)
+          .textTween(function() {
+            let i = d3.interpolate(0, latestVaccinations);
+            return function(t) {
+              return d3.format(",.0f")(i(t));
+            };
+          });
+        percentage.transition()
+          .delay(500)
+          .duration(2000)
+          .textTween(function() {
+            let i = d3.interpolate(0, latestVaccinations / population);
+            return function(t) {
+              return d3.format(".2%")(i(t));
+            };
+          });
+        x = d3.scaleTime()
+          .domain(d3.extent(vaccineData, function(d) { return d.date; }));
+        y = d3.scaleLinear()
+          .domain(d3.extent(vaccineData, function(d) { return d.vaccinations; }));
+        axis = d3.axisBottom(x)
+          .tickSizeOuter(0)
+          .ticks(4, "%b %-d");
         resize();
       }
     </script>

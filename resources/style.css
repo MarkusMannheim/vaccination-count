@@ -56,34 +56,29 @@ p {
   font-family: "ABCSans Regular", "Arial", sans-serif;
   font-size: .8rem;
   color: #666;
-  margin: .5rem 0 1rem .0;
+  margin: .5rem 0;
 }
 .details {
   display: flex;
   justify-content: space-between;
   line-height: 1.75rem;
   border-bottom: solid 2px #e6e6e6;
-  background: #f2f2f2;
 }
 .details div {
   color: #00A388;
   font-size: 1.25rem;
 }
 #chart {
-  background: #999;
+  background: #f2f2f2;
+  height: 100%;
+}
+.tick text {
+  fill: #666;
+  font-size: .7rem;
+}
+.domain, .tick line {
+  stroke: #999;
 }
 @media only screen and (min-width: 500px) {
-  #title {
-    font-size: 1.2rem;
-    padding-bottom: 1rem;
-  }
-  #chart {
-    margin-top: 1rem;
-  }
-  .tick text {
-    font-size: .75rem;
-  }
-  #container {
-    padding: 1rem;
-  }
+
 }
