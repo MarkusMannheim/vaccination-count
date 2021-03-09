@@ -1,0 +1,141 @@
+/* colours
+blue: #009CBF
+orange: #F75F00
+green: #00A388
+--tint-1: #333;
+--tint-2: #666;
+--tint-3: #999;
+--tint-4: #ccc;
+--tint-5: #e6e6e6;
+--tint-6: #f2f2f2;
+ */
+@font-face {
+  font-family: "ABCSans Regular";
+  font-style: normal;
+  font-weight: normal;
+  src: local("ABCSans Regular"), url("./abcsans-regular.woff") format("woff");
+}
+@font-face {
+  font-family: "ABCSans Black";
+  font-style: normal;
+  font-weight: normal;
+  src: local("ABCSans Black"), url("./abcsans-black.woff") format("woff");
+}
+:root {
+  font-size: 1em;
+  font-family: "ABCSans Regular", "Arial", sans-serif;
+  color: #333;
+}
+body {
+  overflow: hidden;
+}
+#container {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  padding: .5rem;
+  margin-bottom: 1rem;
+  border: solid .5px #e6e6e6;
+  display: flex;
+  flex-flow: column;
+}
+h1, p {
+  margin: 0;
+}
+#title {
+  font-family: "ABCSans Black", "Arial Black", sans-serif;
+  font-size: 1rem;
+  padding-bottom: .5rem;
+}
+#stats {
+  display: flex;
+  justify-content: space-between;
+  text-align: center;
+}
+.statBox {
+  font-size: .8rem;
+  padding: 0 .5rem;
+  width: 100%;
+  border-right: dashed 1px #ccc;
+}
+.statBox:first-child {
+  padding-left: 0;
+}
+.statBox:last-child {
+  padding-right: 0;
+  border-right: none;
+}
+.statBox div {
+  display: flex;
+  justify-content: center
+}
+.statBox .number {
+  height: 3.25rem;
+  width: 3.25rem;
+  background-color: #f2f2f2;
+  box-shadow: 1px 1px 3px #333;
+  font-size: 1.25rem;
+  line-height: 3rem;
+  font-family: "ABCSans Black", "Arial Black", sans-serif;
+}
+.statBox p {
+  padding-top: .5rem;
+}
+#deaths {
+  color: #F75F00;
+}
+#active {
+  color: #009CBF;
+}
+#total {
+  color: #999;
+}
+#days {
+  color: #00A388;
+}
+#chart {
+  height: 100%;
+  margin-top: .5rem;
+}
+#axisGroup {
+  opacity: 0;
+}
+.domain {
+  stroke: #e6e6e6;
+  stroke: .5;
+}
+.tick text {
+  fill: #333;
+  font-size: .7rem;
+}
+#plot {
+  fill: #009CBF;
+  clip-path: url(#chartClip);
+}
+@media only screen and (min-width: 500px) {
+  #title {
+    font-size: 1.2rem;
+    padding-bottom: 1rem;
+  }
+  .statBox {
+    display: flex;
+    text-align: left;
+    align-items: center;
+    padding: 0 1rem;
+  }
+  .statBox p {
+    padding-top: 0;
+    padding-left: 1rem;
+  }
+  #chart {
+    margin-top: 1rem;
+  }
+  .tick text {
+    font-size: .75rem;
+  }
+  #container {
+    padding: 1rem;
+  }
+}
