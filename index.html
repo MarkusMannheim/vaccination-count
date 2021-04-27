@@ -101,8 +101,8 @@
         // scales and axes
         x.range([margin.left, width - margin.right]);
         y.range([height - margin.bottom, margin.top]);
-        noTicks = width < 500 ? 4 : 5;
-        axis.ticks(noTicks, "%b");
+        noTicks = width < 500 ? 3 : 4;
+        axis.ticks(noTicks, "%b %d");
         axisGroup.attr("transform", "translate(0, " + (height - margin.bottom) + ")")
           .call(axis);
         plot.attr("d", area(vaccineData));
