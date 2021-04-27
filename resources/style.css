@@ -84,9 +84,50 @@ p {
 .domain, .tick line {
   stroke: #999;
 }
-#plot {
-  fill: #009CBF;
+.plot {
   clip-path: url(#chartClip);
+  stroke: white;
+}
+#plotACT {
+  fill: #00A388;
+}
+#plotFederal {
+  fill: #009CBF;
+}
+#legend {
+  position: absolute;
+  left: 1rem;
+  font-family: "ABCSans Regular", "Arial", sans-serif;
+  font-weight: bold;
+  font-size: .8rem;
+}
+.key {
+  display: flex;
+  color: #00A388;
+}
+.key#federal {
+  color: #009CBF;
+}
+.key:first-child {
+  margin-bottom: .5rem;
+}
+.key div:first-child {
+  height: 16px;
+  width: 16px;
+  background: #00A388;
+  margin-right: .5rem;
+}
+.key div:last-child {
+  line-height: 16px;
+}
+#federal div:first-child {
+  background: #009CBF;
+}
+#act div:last-child::after {
+  content: "ACT";
+}
+#federal div:last-child::after {
+  content: "C'wealth";
 }
 @media only screen and (min-width: 500px) {
   #number p::after {
@@ -94,6 +135,19 @@ p {
   }
   #percentage p::after {
     content: "Estimated share of adult ACT population:";
+  }
+  #federal div:last-child::after {
+    content: "Commonwealth";
+  }
+  #legend {
+    font-size: .9rem;
+  }
+  .key div:first-child {
+    height: 20px;
+    width: 20px;
+  }
+  .key div:last-child {
+    line-height: 20px;
   }
 }
 @media only screen and (min-width: 700px) {
@@ -120,5 +174,24 @@ p {
   }
   .tick text {
     font-size: .9rem;
+  }
+  #legend {
+    left: 6rem;
+    margin-top: 10rem;
+    font-size: 1.2rem;
+  }
+  .key:first-child {
+    margin-bottom: 1.2rem;
+  }
+  .key div:first-child {
+    height: 25px;
+    width: 25px;
+    margin-right: .6rem;
+  }
+  .key div:last-child {
+    line-height: 25px;
+  }
+  .plot {
+    stroke-width: 2;
   }
 }

@@ -49,10 +49,21 @@
         </defs>
         <g id="axisGroup"></g>
         <g id="chartGroup">
-          <path id="plot"></path>
+          <path class="plot" id="plotACT"></path>
+          <path class="plot" id="plotFederal"></path>
         </g>
       </svg>
-      <p id="dateMarker">last updated on <span></span></p>
+      <div id="legend">
+        <div class="key" id="act">
+          <div></div>
+          <div></div>
+        </div>
+        <div class="key" id="federal">
+          <div></div>
+          <div></div>
+        </div>
+      </div>
+      <p id="dateMarker">Last updated on <span></span>. Federal data are estimates based on population profiles.</p>
     </div>
     <script>
       // page elements
@@ -64,22 +75,32 @@
       axisGroup = d3.select("#axisGroup");
       dateMarker = d3.select("#dateMarker span");
       chartClip = d3.select("#chartClip");
-      plot = d3.select("#plot");
+      legend = d3.select("#legend");
+      plotACT = d3.select("#plotACT");
+      plotFederal = d3.select("#plotFederal");
       population = 335737;
+      populationRatio = 0.016714876;
       // load scraped data (with in-built cache refresh)
       d3.csv("./resources/vaccination_data.csv?randomKey=" + Math.floor(Math.random() * 9000) + 1000)
         .then(function(data) {
           // format data
-          vaccineData = data.map(function(d) {
-            return {
-              date: new Date(d.date),
-              vaccinations: +d.vaccinations,
-              percentage: +d.vaccinations / population
-            };
+          vaccineData = data.map(function(d, i) {
+            d.date = new Date(d.date);
+            d.vaccinations = +d.vaccinations;
+            d.federal = +d.federal;
+            return d;
           });
+          for (i = 0; i < vaccineData.length; i++) {
+            if (vaccineData[i].federal == 0 && i > 0) {
+              vaccineData[i].federal = vaccineData[i - 1].federal;
+            } else {
+              vaccineData[i].federal = vaccineData[i].federal * populationRatio;
+            }
+            vaccineData[i].percentage = (vaccineData[i].vaccinations + vaccineData[i].federal) / population;
+          }
           // set data parameters
           latestDate = d3.max(vaccineData, function(d) { return d.date; });
-          latestVaccinations = d3.max(vaccineData, function(d) { return d.vaccinations; });
+          latestVaccinations = d3.max(vaccineData, function(d) { return d.vaccinations + d.federal; });
           dateMarker.text(d3.timeFormat("%B %-d, %Y")(latestDate));
           // draw chart
           window.addEventListener("resize", resize);
@@ -105,16 +126,23 @@
         axis.ticks(noTicks, "%b %-d");
         axisGroup.attr("transform", "translate(0, " + (height - margin.bottom) + ")")
           .call(axis);
-        plot.attr("d", area(vaccineData));
+        plotFederal.attr("d", area(stack(vaccineData)[0]));
+        plotACT.attr("d", area(stack(vaccineData)[1]));
         x.domain(d3.extent(vaccineData, function(d) { return d.date; }));
         axisGroup.transition()
           .delay(500)
           .duration(2000)
           .call(axis);
-        plot.transition()
+        plotFederal.transition()
           .delay(500)
           .duration(2000)
-          .attr("d", area(vaccineData));
+          .attr("d", area(stack(vaccineData)[0]));
+        plotACT.transition()
+          .delay(500)
+          .duration(2000)
+          .attr("d", area(stack(vaccineData)[1]));
+        // position legend
+        legend.style("top", (dimensions.top + 16) + "px");
       }
       function prepareChart() {
         // fade in
@@ -144,14 +172,16 @@
         x = d3.scaleTime()
           .domain([new Date("2021-02-15"), new Date("2021-02-21")]);
         y = d3.scaleLinear()
-          .domain([0, d3.max(vaccineData, function(d) { return d.vaccinations; })]);
+          .domain([0, d3.max(vaccineData, function(d) { return d.vaccinations + d.federal; })]);
         axis = d3.axisBottom(x)
           .tickSizeOuter(0);
         // area plot
+        stack = d3.stack()
+          .keys(["federal", "vaccinations"]);
         area = d3.area()
-          .x(function(d) { return x(d.date) })
-          .y1(function(d) { return y(d.vaccinations); })
-          .y0(function(d) { return y(0); })
+          .x(function(d) { return x(d.data.date); })
+          .y1(function(d) { return y(d[1]); })
+          .y0(function(d) { return y(d[0]); })
           .curve(d3.curveBasis);
         resize();
       }
