@@ -68,10 +68,10 @@ p {
   font-size: 1.25rem;
 }
 #number p::after {
-  content: "Residents vaccinated:";
+  content: "Adults vaccinated:";
 }
 #percentage p::after {
-  content: "Share of population:";
+  content: "Share of adult population:";
 }
 #chart {
   margin: .5rem 0;
@@ -90,10 +90,10 @@ p {
 }
 @media only screen and (min-width: 500px) {
   #number p::after {
-    content: "Number of Canberra residents vaccinated:";
+    content: "No. of adult Canberrans vaccinated:";
   }
   #percentage p::after {
-    content: "Estimated share of the ACT's population:";
+    content: "Estimated share of adult ACT population:";
   }
 }
 @media only screen and (min-width: 700px) {
