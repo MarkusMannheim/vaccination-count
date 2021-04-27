@@ -124,10 +124,10 @@ p {
   background: #009CBF;
 }
 #act div:last-child::after {
-  content: "ACT";
+  content: "ACT govt";
 }
 #federal div:last-child::after {
-  content: "C'wealth";
+  content: "Commonwealth";
 }
 @media only screen and (min-width: 500px) {
   #number p::after {
@@ -136,8 +136,8 @@ p {
   #percentage p::after {
     content: "Estimated share of adult ACT population:";
   }
-  #federal div:last-child::after {
-    content: "Commonwealth";
+  #act div:last-child::after {
+    content: "ACT government";
   }
   #legend {
     font-size: .9rem;

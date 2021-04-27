@@ -63,7 +63,7 @@
           <div></div>
         </div>
       </div>
-      <p id="dateMarker">Last updated on <span></span>. Federal data are estimates based on population profiles.</p>
+      <p id="dateMarker">Last updated on <span></span>. Early Commonwealth data are estimates only.</p>
     </div>
     <script>
       // page elements
@@ -79,7 +79,6 @@
       plotACT = d3.select("#plotACT");
       plotFederal = d3.select("#plotFederal");
       population = 335737;
-      populationRatio = 0.016714876;
       // load scraped data (with in-built cache refresh)
       d3.csv("./resources/vaccination_data.csv?randomKey=" + Math.floor(Math.random() * 9000) + 1000)
         .then(function(data) {
@@ -93,8 +92,6 @@
           for (i = 0; i < vaccineData.length; i++) {
             if (vaccineData[i].federal == 0 && i > 0) {
               vaccineData[i].federal = vaccineData[i - 1].federal;
-            } else {
-              vaccineData[i].federal = vaccineData[i].federal * populationRatio;
             }
             vaccineData[i].percentage = (vaccineData[i].vaccinations + vaccineData[i].federal) / population;
           }
