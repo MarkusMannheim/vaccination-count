@@ -137,7 +137,7 @@
           .textTween(function() {
             let i = d3.interpolate(0, latestVaccinations / population);
             return function(t) {
-              return d3.format(".%")(i(t));
+              return d3.format(".1%")(i(t));
             };
           });
         // scales and axes
