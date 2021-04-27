@@ -86,7 +86,7 @@
           vaccineData = data.map(function(d, i) {
             d.date = new Date(d.date);
             d.vaccinations = +d.vaccinations;
-            d.federal = +d.federal;
+            d.federal = +d.federal / 2;
             return d;
           });
           for (i = 0; i < vaccineData.length; i++) {
